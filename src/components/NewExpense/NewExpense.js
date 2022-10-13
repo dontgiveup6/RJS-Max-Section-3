@@ -1,21 +1,31 @@
+import { useState } from "react";
 import ExpenseForm from "./ExpenseForm";
 import "./NewExpense.css";
 
 const NewExpense = ({ onSaveExpenseData }) => {
-  const expenseSubmition = (submitedExpenseData) => {
-    const newExpenseData = {
-      id: Math.random().toString(),
-      ...submitedExpenseData,
-      amount: parseInt(submitedExpenseData.amount),
-      date: new Date(submitedExpenseData.date),
-    };
+  const [isAdding, setIsAdding] = useState(false);
 
-    onSaveExpenseData(newExpenseData);
+  const expenseSubmition = (submitedExpenseData) => {
+    onSaveExpenseData(submitedExpenseData);
+
+    toggleIsAdding();
+  };
+
+  const toggleIsAdding = () => {
+    setIsAdding((prevState) => {
+      return !prevState;
+    });
   };
 
   return (
     <div className="new-expense">
-      <ExpenseForm onExpenseSubmition={expenseSubmition} />
+      {!isAdding && <button onClick={toggleIsAdding}>Add New Expense</button>}
+      {isAdding && (
+        <ExpenseForm
+          onCancelHandler={toggleIsAdding}
+          onExpenseSubmition={expenseSubmition}
+        />
+      )}
     </div>
   );
 };
